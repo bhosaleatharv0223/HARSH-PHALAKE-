@@ -1123,9 +1123,10 @@ Sent from harshphalkefilms.com`;
               ))}
             </div>
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* Bill Summary Section */}
+      {/* Bill Summary Section */}
         <section data-section="bill" className="py-24 px-6 bg-gradient-to-b from-[#1E1E1E]/20 to-[#0A0A0A]">
           <div className="max-w-4xl mx-auto">
             <AnimatedSection>

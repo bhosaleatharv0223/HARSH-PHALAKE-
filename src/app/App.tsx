@@ -1587,6 +1587,7 @@ Sent from harshphalkefilms.com`;
                   </p>
                 )}
               </div>
+              </AnimatedSection>
 
               <div>
                 <label className="block text-sm text-[#CCCCCC] mb-2">Event Date *</label>

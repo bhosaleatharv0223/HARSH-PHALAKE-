@@ -21,7 +21,7 @@ export default function App() {
   // Cinematic intro animation state
   const [showCinematicIntro, setShowCinematicIntro] = useState(true);
   const [introComplete, setIntroComplete] = useState(false);
-  
+
   const [selectedEvents, setSelectedEvents] = useState<Set<string>>(new Set());
   const [eventDurations, setEventDurations] = useState<Map<string, 'full' | 'half'>>(new Map());
   const [albumType, setAlbumType] = useState<'small' | 'large'>('small');
@@ -55,7 +55,7 @@ export default function App() {
     message: ''
   });
   const [formErrors, setFormErrors] = useState<Set<string>>(new Set());
-  
+
   // New state variables for Cloudinary upload system
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'uploading' | 'success' | 'error'>('idle');
@@ -85,128 +85,31 @@ export default function App() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Animation component for scroll-triggered elements
-  const AnimatedSection = ({ children, className = '', delay = 0 }: { 
-    children: React.ReactNode; 
-    className?: string; 
-    delay?: number; 
+  // Simple wrapper component (no animations)
+  const AnimatedSection = ({ children, className = '' }: {
+    children: React.ReactNode;
+    className?: string;
   }) => {
-    const ref = useRef(null);
-    const isInView = useInView(ref, { threshold: 0.15, once: true });
-    
-    useEffect(() => {
-      if (isInView && ref.current) {
-        const element = ref.current as HTMLElement;
-        
-        // Add animate class to trigger CSS animations
-        setTimeout(() => {
-          element.classList.add('animate');
-          
-          // Trigger animations for child elements
-          const headings = element.querySelectorAll('.cinematic-heading, .services-heading');
-          const labels = element.querySelectorAll('.services-label');
-          const texts = element.querySelectorAll('.cinematic-text');
-          const cards = element.querySelectorAll('.cinematic-card');
-          const contactCards = element.querySelectorAll('.contact-card');
-          const footerElements = element.querySelectorAll('.footer-element');
-          const goldUnderlines = element.querySelectorAll('.gold-underline');
-          
-          headings.forEach((heading, index) => {
-            setTimeout(() => heading.classList.add('animate'), index * 120);
-          });
-          
-          labels.forEach((label, index) => {
-            setTimeout(() => label.classList.add('animate'), index * 120 + 200);
-          });
-          
-          texts.forEach((text, index) => {
-            setTimeout(() => text.classList.add('animate'), index * 120 + 400);
-          });
-          
-          cards.forEach((card, index) => {
-            setTimeout(() => card.classList.add('animate'), index * 100 + 600);
-          });
-          
-          contactCards.forEach((card, index) => {
-            setTimeout(() => card.classList.add('animate'), index * 150 + 300);
-          });
-          
-          footerElements.forEach((element, index) => {
-            setTimeout(() => element.classList.add('animate'), index * 100 + 200);
-          });
-          
-          goldUnderlines.forEach((underline, index) => {
-            setTimeout(() => underline.classList.add('animate'), index * 100 + 800);
-          });
-        }, delay * 1000);
-      }
-    }, [isInView, delay]);
-    
     return (
-      <motion.div
-        ref={ref}
-        initial={{ opacity: 0, y: 40 }}
-        animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
-        transition={{ duration: 0.8, delay, ease: [0.22, 1, 0.36, 1] }}
-        className={className}
-      >
+      <div className={className}>
         {children}
-      </motion.div>
+      </div>
     );
   };
 
-  // Staggered card animation component
-  const AnimatedCard = ({ children, index = 0, className = '' }: { 
-    children: React.ReactNode; 
-    index?: number; 
-    className?: string; 
+  // Simple card wrapper component (no animations)
+  const AnimatedCard = ({ children, className = '' }: {
+    children: React.ReactNode;
+    className?: string;
   }) => {
-    const ref = useRef(null);
-    const isInView = useInView(ref, { threshold: 0.15, once: true });
-    
-    useEffect(() => {
-      if (isInView && ref.current) {
-        const element = ref.current as HTMLElement;
-        setTimeout(() => {
-          element.classList.add('animate');
-          
-          // Trigger specific card animations
-          const serviceIcons = element.querySelectorAll('.service-icon-pulse');
-          const addonCheckboxes = element.querySelectorAll('.addon-checkbox');
-          
-          serviceIcons.forEach((icon) => {
-            icon.classList.add('service-icon-pulse');
-          });
-          
-          addonCheckboxes.forEach((checkbox) => {
-            checkbox.classList.add('addon-checkbox');
-          });
-        }, index * 100);
-      }
-    }, [isInView, index]);
-    
     return (
-      <motion.div
-        ref={ref}
-        initial={{ opacity: 0, y: 50 }}
-        animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
-        transition={{ 
-          duration: 0.8, 
-          delay: index * 0.1, 
-          ease: [0.22, 1, 0.36, 1] 
-        }}
-        whileHover={{ 
-          y: -6,
-          boxShadow: "0 0 0 1px #C9A84C, 0 12px 40px rgba(201,168,76,0.12)"
-        }}
-        className={`${className} transition-all duration-300`}
-      >
+      <div className={className}>
         {children}
-      </motion.div>
+      </div>
     );
   };
 
-  // Cinematic Intro Component
+  // Cinematic intro component with proper conditional rendering
   const CinematicIntro = () => (
     <AnimatePresence>
       {showCinematicIntro && (
@@ -224,7 +127,7 @@ export default function App() {
             <div className="flex items-center gap-3">
               <Camera className="w-12 h-12 text-[#C9A84C]" />
               <div className="text-center">
-                <div 
+                <div
                   className="text-3xl font-bold tracking-wider text-white"
                   style={{ fontFamily: 'var(--font-display)' }}
                 >
@@ -236,7 +139,7 @@ export default function App() {
               </div>
             </div>
           </motion.div>
-          
+
           <motion.div
             className="cinematic-curtain-left"
             initial={{ x: 0 }}
@@ -254,7 +157,7 @@ export default function App() {
     </AnimatePresence>
   );
 
-  // Film Grain Overlay Component
+  // Film grain overlay component with conditional rendering
   const FilmGrain = () => (
     introComplete && (
       <div className="film-grain" />
@@ -429,7 +332,7 @@ export default function App() {
 
   const handleConfirmBooking = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // VALIDATE fields first
     const errors: { [key: string]: string } = {};
     if (!formData.fullName.trim()) errors.fullName = 'Name is required';
@@ -438,26 +341,26 @@ export default function App() {
     if (!formData.eventDate) errors.eventDate = 'Event date is required';
     if (!formData.location.trim()) errors.location = 'Venue is required';
     if (!paymentScreenshotFile) errors.screenshot = 'Payment screenshot is required';
-    
+
     if (Object.keys(errors).length > 0) {
       setFormErrors(new Set(Object.keys(errors)));
       toast.error('Please fill in all required fields');
       return;
     }
-    
+
     setFormErrors(new Set());
     setIsSubmitting(true);
     setSubmitStatus('uploading');
-    
+
     try {
       const today = new Date();
       const dateStr = today.toLocaleDateString('en-IN', {
-        day: '2-digit', 
-        month: '2-digit', 
+        day: '2-digit',
+        month: '2-digit',
         year: 'numeric'
       }).replace(/\//g, '');
       const clientName = formData.fullName.replace(/\s+/g, '_');
-      
+
       // UPLOAD 1 — Bill image (base64 from bill generator)
       let billUrl = null;
       if (billImageBase64) {
@@ -467,27 +370,27 @@ export default function App() {
           `Bill_${clientName}_${dateStr}.jpg`
         );
       }
-      
+
       // UPLOAD 2 — Payment screenshot (File object)
       setUploadProgress('Uploading payment screenshot...');
       const screenshotUrl = await uploadToCloudinary(
         paymentScreenshotFile,
         `Payment_${clientName}_${dateStr}.jpg`
       );
-      
+
       setUploadProgress('Opening WhatsApp...');
-      
+
       // FORMAT WhatsApp message with real clickable URLs
       const bookingDate = today.toLocaleDateString('en-IN', {
-        day: '2-digit', 
-        month: 'long', 
+        day: '2-digit',
+        month: 'long',
         year: 'numeric'
       });
-      
-      const invoiceLine = billUrl 
+
+      const invoiceLine = billUrl
         ? `🧾 *Invoice (tap to open):*\n${billUrl}`
         : `🧾 *Invoice:* Not generated`;
-      
+
       const whatsappMessage = `🎬 *HARSH PHALKE FILMS & PHOTOGRAPHY*
 ✨ _Premium Photography & Cinematography_
 📍 Pune, Maharashtra
@@ -496,7 +399,7 @@ export default function App() {
 
 🔔 *NEW BOOKING REQUEST*
 🗓️ _Received: ${bookingDate}_
-🆔 _Ref: HP-${today.getFullYear()}-${Math.floor(Math.random()*900)+100}_
+🆔 _Ref: HP-${today.getFullYear()}-${Math.floor(Math.random() * 900) + 100}_
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -532,7 +435,7 @@ ${screenshotUrl}
 
       const encoded = encodeURIComponent(whatsappMessage);
       window.open(`https://wa.me/917720049725?text=${encoded}`, '_blank');
-      
+
       setSubmitStatus('success');
       toast.success('Booking request sent successfully!');
     } catch (error) {
@@ -547,10 +450,10 @@ ${screenshotUrl}
   };
 
   const openWhatsAppAgain = () => {
-    const bookingDate = new Date().toLocaleDateString('en-IN', { 
-      day: '2-digit', 
-      month: 'long', 
-      year: 'numeric' 
+    const bookingDate = new Date().toLocaleDateString('en-IN', {
+      day: '2-digit',
+      month: 'long',
+      year: 'numeric'
     });
 
     const whatsappMessage = `*HARSH PHALKE FILMS & PHOTOGRAPHY*
@@ -730,21 +633,18 @@ Sent from harshphalkefilms.com`;
     <div className="min-h-screen bg-[#0A0A0A] text-[#F5F0E8]" style={{ fontFamily: 'var(--font-body)' }}>
       {/* Cinematic Intro Animation */}
       <CinematicIntro />
-      
+
       {/* Film Grain Overlay */}
       <FilmGrain />
-      
+
       <Toaster position="top-center" theme="dark" toastOptions={{ style: { background: '#1E1E1E', color: '#F5F0E8', border: '1px solid #C9A84C' } }} />
 
       {/* Navigation */}
-      <motion.nav
-        initial={{ y: -100 }}
-        animate={{ y: 0 }}
-        className={`fixed top-0 left-0 right-0 z-50 border-b border-[#C9A84C]/20 transition-all duration-400 ${
-          navbarScrolled 
-            ? 'navbar-scrolled bg-[#0A0A0A]/85 backdrop-blur-[20px]' 
-            : 'navbar-default bg-[#0A0A0A]/90 backdrop-blur-md'
-        }`}
+      <nav
+        className={`fixed top-0 left-0 right-0 z-50 border-b border-[#C9A84C]/20 transition-all duration-400 ${navbarScrolled
+          ? 'navbar-scrolled bg-[#0A0A0A]/85 backdrop-blur-[20px]'
+          : 'navbar-default bg-[#0A0A0A]/90 backdrop-blur-md'
+          }`}
       >
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <button
@@ -783,10 +683,10 @@ Sent from harshphalkefilms.com`;
             <Menu className="w-6 h-6" />
           </button>
         </div>
-      </motion.nav>
+      </nav>
 
       {/* Hero Section */}
-      <motion.section
+      <section
         id="home"
         style={{ opacity: heroOpacity }}
         className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden pt-20"
@@ -823,7 +723,7 @@ Sent from harshphalkefilms.com`;
             className="flex gap-4 justify-center flex-wrap"
           >
             <motion.button
-              whileHover={{ 
+              whileHover={{
                 scale: 1.05,
                 boxShadow: "0 0 0 0 rgba(201,168,76,0.6), 0 0 0 12px rgba(201,168,76,0)"
               }}
@@ -834,7 +734,7 @@ Sent from harshphalkefilms.com`;
               Book Now
             </motion.button>
             <motion.button
-              whileHover={{ 
+              whileHover={{
                 scale: 1.05,
                 borderColor: "#E8C96A"
               }}
@@ -853,7 +753,7 @@ Sent from harshphalkefilms.com`;
         >
           <ChevronDown className="w-8 h-8 text-[#C9A84C]" />
         </motion.div>
-      </motion.section>
+      </section>
 
       {/* About Section */}
       <section id="about" className="py-24 px-6">
@@ -882,7 +782,7 @@ Sent from harshphalkefilms.com`;
                 index={i}
                 className="bg-[#1E1E1E] p-8 rounded-lg text-center cursor-pointer hover:bg-[#1E1E1E]/80 transition-colors cinematic-card"
               >
-                <div 
+                <div
                   onClick={() => setExpandedAbout(i)}
                   className="w-full h-full"
                 >
@@ -914,17 +814,16 @@ Sent from harshphalkefilms.com`;
             <AnimatedSection delay={0.2}>
               <h3 className="text-2xl font-bold mb-6 text-[#C9A84C] services-label">Select Your Event</h3>
             </AnimatedSection>
-            
+
             <div className="grid md:grid-cols-3 lg:grid-cols-5 gap-4 mb-6">
               {eventCategories.priority.map((event, index) => (
                 <AnimatedCard
                   key={event.id}
                   index={index}
-                  className={`bg-[#1E1E1E] p-6 rounded-lg cursor-pointer border-2 transition-all cinematic-card ${
-                    selectedEvents.has(event.id) 
-                      ? 'service-card-selected border-[#C9A84C] shadow-lg shadow-[#C9A84C]/20' 
-                      : 'border-transparent'
-                  }`}
+                  className={`bg-[#1E1E1E] p-6 rounded-lg cursor-pointer border-2 transition-all cinematic-card ${selectedEvents.has(event.id)
+                    ? 'service-card-selected border-[#C9A84C] shadow-lg shadow-[#C9A84C]/20'
+                    : 'border-transparent'
+                    }`}
                 >
                   <div
                     onClick={() => {
@@ -954,11 +853,10 @@ Sent from harshphalkefilms.com`;
                             newDurations.set(event.id, 'full');
                             setEventDurations(newDurations);
                           }}
-                          className={`flex-1 py-1 px-2 text-xs rounded ${
-                            (eventDurations.get(event.id) || 'full') === 'full'
-                              ? 'bg-[#C9A84C] text-[#0A0A0A]'
-                              : 'bg-[#0A0A0A] text-[#888888]'
-                          }`}
+                          className={`flex-1 py-1 px-2 text-xs rounded ${(eventDurations.get(event.id) || 'full') === 'full'
+                            ? 'bg-[#C9A84C] text-[#0A0A0A]'
+                            : 'bg-[#0A0A0A] text-[#888888]'
+                            }`}
                         >
                           Full Day
                         </button>
@@ -969,11 +867,10 @@ Sent from harshphalkefilms.com`;
                             newDurations.set(event.id, 'half');
                             setEventDurations(newDurations);
                           }}
-                          className={`flex-1 py-1 px-2 text-xs rounded ${
-                            eventDurations.get(event.id) === 'half'
-                              ? 'bg-[#C9A84C] text-[#0A0A0A]'
-                              : 'bg-[#0A0A0A] text-[#888888]'
-                          }`}
+                          className={`flex-1 py-1 px-2 text-xs rounded ${eventDurations.get(event.id) === 'half'
+                            ? 'bg-[#C9A84C] text-[#0A0A0A]'
+                            : 'bg-[#0A0A0A] text-[#888888]'
+                            }`}
                         >
                           Half Day
                         </button>
@@ -989,11 +886,10 @@ Sent from harshphalkefilms.com`;
                 <AnimatedCard
                   key={event.id}
                   index={index + 5}
-                  className={`bg-[#1E1E1E] p-4 rounded-lg cursor-pointer border-2 transition-all cinematic-card ${
-                    selectedEvents.has(event.id) 
-                      ? 'service-card-selected border-[#C9A84C]' 
-                      : 'border-transparent'
-                  }`}
+                  className={`bg-[#1E1E1E] p-4 rounded-lg cursor-pointer border-2 transition-all cinematic-card ${selectedEvents.has(event.id)
+                    ? 'service-card-selected border-[#C9A84C]'
+                    : 'border-transparent'
+                    }`}
                 >
                   <div
                     onClick={() => {
@@ -1025,15 +921,14 @@ Sent from harshphalkefilms.com`;
             <AnimatedSection delay={0.4}>
               <h3 className="text-2xl font-bold mb-6 text-[#C9A84C] services-label">Album Packages</h3>
             </AnimatedSection>
-            
+
             <div className="grid md:grid-cols-2 gap-6 mb-6">
               <AnimatedCard
                 index={0}
-                className={`bg-[#1E1E1E] p-8 rounded-lg cursor-pointer border-2 transition-all cinematic-card ${
-                  albumType === 'small' 
-                    ? 'album-card-selected border-[#C9A84C]' 
-                    : 'border-transparent'
-                }`}
+                className={`bg-[#1E1E1E] p-8 rounded-lg cursor-pointer border-2 transition-all cinematic-card ${albumType === 'small'
+                  ? 'album-card-selected border-[#C9A84C]'
+                  : 'border-transparent'
+                  }`}
               >
                 <div onClick={() => setAlbumType('small')}>
                   <h4 className="text-2xl font-bold mb-3">8×24 Small Album</h4>
@@ -1043,14 +938,13 @@ Sent from harshphalkefilms.com`;
                   {albumType === 'small' && <Check className="w-6 h-6 text-[#C9A84C] mt-2" />}
                 </div>
               </AnimatedCard>
-              
+
               <AnimatedCard
                 index={1}
-                className={`bg-[#1E1E1E] p-8 rounded-lg cursor-pointer border-2 transition-all cinematic-card ${
-                  albumType === 'large' 
-                    ? 'album-card-selected border-[#C9A84C]' 
-                    : 'border-transparent'
-                }`}
+                className={`bg-[#1E1E1E] p-8 rounded-lg cursor-pointer border-2 transition-all cinematic-card ${albumType === 'large'
+                  ? 'album-card-selected border-[#C9A84C]'
+                  : 'border-transparent'
+                  }`}
               >
                 <div onClick={() => setAlbumType('large')}>
                   <h4 className="text-2xl font-bold mb-3">12×36 Large Album</h4>
@@ -1061,7 +955,7 @@ Sent from harshphalkefilms.com`;
                 </div>
               </AnimatedCard>
             </div>
-            
+
             <AnimatedSection delay={0.6}>
               <div className="bg-[#1E1E1E] p-6 rounded-lg max-w-md">
                 <label className="block mb-3 text-[#CCCCCC]">Number of Pages</label>
@@ -1082,17 +976,16 @@ Sent from harshphalkefilms.com`;
             <AnimatedSection delay={0.8}>
               <h3 className="text-2xl font-bold mb-6 text-[#C9A84C] services-label">Add-on Services</h3>
             </AnimatedSection>
-            
+
             <div className="grid md:grid-cols-3 gap-4">
               {addonServices.map((addon, index) => (
                 <AnimatedCard
                   key={addon.id}
                   index={index}
-                  className={`bg-[#1E1E1E] p-6 rounded-lg cursor-pointer border-2 transition-all cinematic-card ${
-                    addons.has(addon.id) 
-                      ? 'addon-card-selected border-[#C9A84C] shadow-lg shadow-[#C9A84C]/20' 
-                      : 'border-transparent'
-                  }`}
+                  className={`bg-[#1E1E1E] p-6 rounded-lg cursor-pointer border-2 transition-all cinematic-card ${addons.has(addon.id)
+                    ? 'addon-card-selected border-[#C9A84C] shadow-lg shadow-[#C9A84C]/20'
+                    : 'border-transparent'
+                    }`}
                 >
                   <div
                     onClick={() => {
@@ -1127,48 +1020,48 @@ Sent from harshphalkefilms.com`;
       </section>
 
       {/* Bill Summary Section */}
-        <section data-section="bill" className="py-24 px-6 bg-gradient-to-b from-[#1E1E1E]/20 to-[#0A0A0A]">
-          <div className="max-w-4xl mx-auto">
-            <AnimatedSection>
-              <h2
-                className="text-4xl mb-8 text-center services-heading"
-                style={{ fontFamily: 'var(--font-display)' }}
-              >
-                Generate Your Bill
-              </h2>
-            </AnimatedSection>
-            <AnimatedSection>
-              <h2
-                className="text-4xl md:text-5xl mb-6 cinematic-heading"
-                style={{ fontFamily: 'var(--font-display)' }}
-              >
-                About Us
-                <div className="gold-underline" />
-              </h2>
-              <p className="text-[#CCCCCC] text-lg leading-relaxed mb-12 max-w-3xl cinematic-text">
-                We are a premium photography and videography studio based in Pune, specializing in
-                cinematic storytelling that captures the essence of your most precious moments. With a
-                passion for detail and emotion, we transform fleeting moments into timeless memories.
-              </p>
-            </AnimatedSection>
+      <section data-section="bill" className="py-24 px-6 bg-gradient-to-b from-[#1E1E1E]/20 to-[#0A0A0A]">
+        <div className="max-w-4xl mx-auto">
+          <AnimatedSection>
+            <h2
+              className="text-4xl mb-8 text-center services-heading"
+              style={{ fontFamily: 'var(--font-display)' }}
+            >
+              Generate Your Bill
+            </h2>
+          </AnimatedSection>
+          <AnimatedSection>
+            <h2
+              className="text-4xl md:text-5xl mb-6 cinematic-heading"
+              style={{ fontFamily: 'var(--font-display)' }}
+            >
+              About Us
+              <div className="gold-underline" />
+            </h2>
+            <p className="text-[#CCCCCC] text-lg leading-relaxed mb-12 max-w-3xl cinematic-text">
+              We are a premium photography and videography studio based in Pune, specializing in
+              cinematic storytelling that captures the essence of your most precious moments. With a
+              passion for detail and emotion, we transform fleeting moments into timeless memories.
+            </p>
+          </AnimatedSection>
 
-            <div className="grid md:grid-cols-3 gap-6">
-              {aboutDetails.map((item, i) => (
-                <AnimatedCard
-                  key={i}
-                  index={i}
-                  className="bg-[#1E1E1E] p-8 rounded-lg text-center cursor-pointer hover:bg-[#1E1E1E]/80 transition-colors"
-                  onClick={() => setExpandedAbout(i)}
-                >
-                  <div className="text-4xl mb-4">{item.icon}</div>
-                  <h3 className="text-xl font-bold mb-2 text-[#C9A84C]">{item.title}</h3>
-                  <p className="text-[#888888]">{item.desc}</p>
-                  <p className="text-xs text-[#C9A84C] mt-4">Click to learn more</p>
-                </AnimatedCard>
-              ))}
-            </div>
+          <div className="grid md:grid-cols-3 gap-6">
+            {aboutDetails.map((item, i) => (
+              <AnimatedCard
+                key={i}
+                index={i}
+                className="bg-[#1E1E1E] p-8 rounded-lg text-center cursor-pointer hover:bg-[#1E1E1E]/80 transition-colors"
+                onClick={() => setExpandedAbout(i)}
+              >
+                <div className="text-4xl mb-4">{item.icon}</div>
+                <h3 className="text-xl font-bold mb-2 text-[#C9A84C]">{item.title}</h3>
+                <p className="text-[#888888]">{item.desc}</p>
+                <p className="text-xs text-[#C9A84C] mt-4">Click to learn more</p>
+              </AnimatedCard>
+            ))}
           </div>
-        </section>
+        </div>
+      </section>
 
       {/* Services Section */}
       <section id="services" className="py-24 px-6 bg-gradient-to-b from-[#0A0A0A] to-[#1E1E1E]/20">
@@ -1573,20 +1466,20 @@ Sent from harshphalkefilms.com`;
                   <select
                     value={formData.eventType}
                     onChange={(e) => setFormData({ ...formData, eventType: e.target.value })}
-                  className={`w-full bg-[#0A0A0A] border-2 ${formErrors.has('eventType') ? 'border-red-500' : 'border-[#C9A84C]/30'
-                    } focus:border-[#C9A84C] rounded-lg px-4 py-3 outline-none transition-colors`}
-                >
-                  <option value="">Select event type</option>
-                  {[...eventCategories.priority, ...eventCategories.other].map(event => (
-                    <option key={event.id} value={event.name}>{event.name}</option>
-                  ))}
-                </select>
-                {formErrors.has('eventType') && (
-                  <p style={{ color: '#ff4444', fontSize: '11px', marginTop: '4px', marginLeft: '4px' }}>
-                    ❌ Please select event type
-                  </p>
-                )}
-              </div>
+                    className={`w-full bg-[#0A0A0A] border-2 ${formErrors.has('eventType') ? 'border-red-500' : 'border-[#C9A84C]/30'
+                      } focus:border-[#C9A84C] rounded-lg px-4 py-3 outline-none transition-colors`}
+                  >
+                    <option value="">Select event type</option>
+                    {[...eventCategories.priority, ...eventCategories.other].map(event => (
+                      <option key={event.id} value={event.name}>{event.name}</option>
+                    ))}
+                  </select>
+                  {formErrors.has('eventType') && (
+                    <p style={{ color: '#ff4444', fontSize: '11px', marginTop: '4px', marginLeft: '4px' }}>
+                      ❌ Please select event type
+                    </p>
+                  )}
+                </div>
               </AnimatedSection>
 
               <div>
@@ -1801,7 +1694,7 @@ Sent from harshphalkefilms.com`;
                       'Confirm Booking'
                     )}
                   </motion.button>
-                  
+
                   <style>
                     {`@keyframes spin { to { transform: rotate(360deg); } }`}
                   </style>
@@ -1851,11 +1744,11 @@ Sent from harshphalkefilms.com`;
                     onClick={() => {
                       setSubmitStatus('idle');
                       setFormData({
-                        fullName: '', 
-                        phone: '', 
+                        fullName: '',
+                        phone: '',
                         eventType: '',
-                        eventDate: '', 
-                        location: '', 
+                        eventDate: '',
+                        location: '',
                         message: ''
                       });
                       setPaymentScreenshotFile(null);
@@ -1890,7 +1783,7 @@ Sent from harshphalkefilms.com`;
                 </a>
               </p>
             </div>
-          </div>
+          </AnimatedCard>
         </div>
       </section>
 
@@ -1998,20 +1891,11 @@ Sent from harshphalkefilms.com`;
               Let's create something beautiful together.
             </p>
           </AnimatedSection>
-            </div>
-          </div>
-
-          <p
-            className="text-center text-2xl mt-12 italic text-[#C9A84C]"
-            style={{ fontFamily: 'var(--font-display)' }}
-          >
-            Let's create something beautiful together.
-          </p>
         </div>
       </section>
 
       {/* Terms & Conditions */}
-      <section className="py-24 px-6 bg-gradient-to-b from-[#0A0A0A] to-[#1E1E1E]/20">
+      < section className="py-24 px-6 bg-gradient-to-b from-[#0A0A0A] to-[#1E1E1E]/20" >
         <div className="max-w-4xl mx-auto">
           <AnimatedSection>
             <h2
@@ -2037,9 +1921,8 @@ Sent from harshphalkefilms.com`;
                 >
                   <span className="font-bold text-[#F5F0E8]">{term.title}</span>
                   <ChevronDown
-                    className={`w-5 h-5 text-[#C9A84C] accordion-chevron ${
-                      expandedTerm === index ? 'open' : ''
-                    }`}
+                    className={`w-5 h-5 text-[#C9A84C] accordion-chevron ${expandedTerm === index ? 'open' : ''
+                      }`}
                   />
                 </button>
                 <div className={`accordion-content ${expandedTerm === index ? 'open' : ''}`}>
@@ -2051,523 +1934,537 @@ Sent from harshphalkefilms.com`;
             ))}
           </div>
         </div>
-      </section>
+      </section >
 
       {/* Mobile Menu Overlay */}
       <AnimatePresence>
-        {mobileMenuOpen && (
-          <>
+        {
+          mobileMenuOpen && (
+            <>
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setMobileMenuOpen(false)}
+                className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50"
+              />
+              <motion.div
+                initial={{ x: -300 }}
+                animate={{ x: 0 }}
+                exit={{ x: -300 }}
+                transition={{ type: 'spring', damping: 25 }}
+                className="fixed left-0 top-0 bottom-0 w-80 bg-[#1E1E1E] z-50 p-8 overflow-y-auto"
+              >
+                <div className="flex items-center justify-between mb-8">
+                  <div className="flex items-center gap-3">
+                    <Camera className="w-6 h-6 text-[#C9A84C]" />
+                    <div>
+                      <div className="font-bold text-sm" style={{ fontFamily: 'var(--font-display)' }}>
+                        HARSH PHALKE
+                      </div>
+                      <div className="text-xs text-[#C9A84C]">PHOTO & FILMS</div>
+                    </div>
+                  </div>
+                  <button onClick={() => setMobileMenuOpen(false)}>
+                    <X className="w-6 h-6 text-[#C9A84C]" />
+                  </button>
+                </div>
+
+                <div className="space-y-4">
+                  {['Home', 'About', 'Services', 'Contact'].map(item => (
+                    <button
+                      key={item}
+                      onClick={() => scrollToSection(item.toLowerCase())}
+                      className="block w-full text-left py-3 px-4 rounded-lg hover:bg-[#C9A84C]/10 text-[#F5F0E8] transition-colors"
+                    >
+                      {item}
+                    </button>
+                  ))}
+                  <button
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      setPortfolioOpen(true);
+                    }}
+                    className="block w-full text-left py-3 px-4 rounded-lg hover:bg-[#C9A84C]/10 text-[#F5F0E8] transition-colors"
+                  >
+                    Portfolio
+                  </button>
+                </div>
+              </motion.div>
+            </>
+          )
+        }
+      </AnimatePresence >
+
+      {/* Portfolio Modal */}
+      <AnimatePresence>
+        {
+          portfolioOpen && (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              onClick={() => setMobileMenuOpen(false)}
-              className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50"
-            />
-            <motion.div
-              initial={{ x: -300 }}
-              animate={{ x: 0 }}
-              exit={{ x: -300 }}
-              transition={{ type: 'spring', damping: 25 }}
-              className="fixed left-0 top-0 bottom-0 w-80 bg-[#1E1E1E] z-50 p-8 overflow-y-auto"
+              onClick={() => setPortfolioOpen(false)}
+              className="fixed inset-0 bg-black/90 backdrop-blur-sm z-50 flex items-center justify-center p-6"
             >
-              <div className="flex items-center justify-between mb-8">
-                <div className="flex items-center gap-3">
-                  <Camera className="w-6 h-6 text-[#C9A84C]" />
-                  <div>
-                    <div className="font-bold text-sm" style={{ fontFamily: 'var(--font-display)' }}>
-                      HARSH PHALKE
-                    </div>
-                    <div className="text-xs text-[#C9A84C]">PHOTO & FILMS</div>
-                  </div>
-                </div>
-                <button onClick={() => setMobileMenuOpen(false)}>
-                  <X className="w-6 h-6 text-[#C9A84C]" />
-                </button>
-              </div>
-
-              <div className="space-y-4">
-                {['Home', 'About', 'Services', 'Contact'].map(item => (
-                  <button
-                    key={item}
-                    onClick={() => scrollToSection(item.toLowerCase())}
-                    className="block w-full text-left py-3 px-4 rounded-lg hover:bg-[#C9A84C]/10 text-[#F5F0E8] transition-colors"
-                  >
-                    {item}
-                  </button>
-                ))}
+              <motion.div
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.9, opacity: 0 }}
+                onClick={(e) => e.stopPropagation()}
+                className="bg-[#1E1E1E] rounded-lg p-8 max-w-2xl w-full relative"
+              >
                 <button
-                  onClick={() => {
-                    setMobileMenuOpen(false);
-                    setPortfolioOpen(true);
-                  }}
-                  className="block w-full text-left py-3 px-4 rounded-lg hover:bg-[#C9A84C]/10 text-[#F5F0E8] transition-colors"
+                  onClick={() => setPortfolioOpen(false)}
+                  className="absolute top-4 right-4 text-[#C9A84C] hover:text-[#F5F0E8]"
                 >
-                  Portfolio
+                  <X className="w-6 h-6" />
                 </button>
-              </div>
+                <h2 className="text-3xl mb-6" style={{ fontFamily: 'var(--font-display)' }}>
+                  Our Portfolio
+                </h2>
+                <p className="text-[#CCCCCC] mb-6">
+                  Explore our collection of cinematic photography and videography work. Visit our Instagram to see our latest projects and client testimonials.
+                </p>
+                <div className="grid grid-cols-2 gap-4 mb-6">
+                  {[1, 2, 3, 4].map((i) => (
+                    <div key={i} className="aspect-square bg-[#0A0A0A] rounded-lg flex items-center justify-center">
+                      <Camera className="w-12 h-12 text-[#C9A84C]/30" />
+                    </div>
+                  ))}
+                </div>
+                <motion.a
+                  href="https://instagram.com/harsh_phalke_films"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  whileHover={{ scale: 1.02 }}
+                  className="block text-center py-3 bg-[#C9A84C] text-[#0A0A0A] rounded-lg font-bold"
+                >
+                  View Full Portfolio on Instagram
+                </motion.a>
+              </motion.div>
             </motion.div>
-          </>
-        )}
-      </AnimatePresence>
-
-      {/* Portfolio Modal */}
-      <AnimatePresence>
-        {portfolioOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setPortfolioOpen(false)}
-            className="fixed inset-0 bg-black/90 backdrop-blur-sm z-50 flex items-center justify-center p-6"
-          >
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              onClick={(e) => e.stopPropagation()}
-              className="bg-[#1E1E1E] rounded-lg p-8 max-w-2xl w-full relative"
-            >
-              <button
-                onClick={() => setPortfolioOpen(false)}
-                className="absolute top-4 right-4 text-[#C9A84C] hover:text-[#F5F0E8]"
-              >
-                <X className="w-6 h-6" />
-              </button>
-              <h2 className="text-3xl mb-6" style={{ fontFamily: 'var(--font-display)' }}>
-                Our Portfolio
-              </h2>
-              <p className="text-[#CCCCCC] mb-6">
-                Explore our collection of cinematic photography and videography work. Visit our Instagram to see our latest projects and client testimonials.
-              </p>
-              <div className="grid grid-cols-2 gap-4 mb-6">
-                {[1, 2, 3, 4].map((i) => (
-                  <div key={i} className="aspect-square bg-[#0A0A0A] rounded-lg flex items-center justify-center">
-                    <Camera className="w-12 h-12 text-[#C9A84C]/30" />
-                  </div>
-                ))}
-              </div>
-              <motion.a
-                href="https://instagram.com/harsh_phalke_films"
-                target="_blank"
-                rel="noopener noreferrer"
-                whileHover={{ scale: 1.02 }}
-                className="block text-center py-3 bg-[#C9A84C] text-[#0A0A0A] rounded-lg font-bold"
-              >
-                View Full Portfolio on Instagram
-              </motion.a>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          )
+        }
+      </AnimatePresence >
 
       {/* About Detail Modal */}
       <AnimatePresence>
-        {expandedAbout !== null && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setExpandedAbout(null)}
-            className="fixed inset-0 bg-black/90 backdrop-blur-sm z-50 flex items-center justify-center p-6"
-          >
+        {
+          expandedAbout !== null && (
             <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              onClick={(e) => e.stopPropagation()}
-              className="bg-[#1E1E1E] rounded-lg p-8 max-w-lg w-full relative"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setExpandedAbout(null)}
+              className="fixed inset-0 bg-black/90 backdrop-blur-sm z-50 flex items-center justify-center p-6"
             >
-              <button
-                onClick={() => setExpandedAbout(null)}
-                className="absolute top-4 right-4 text-[#C9A84C] hover:text-[#F5F0E8]"
+              <motion.div
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.9, opacity: 0 }}
+                onClick={(e) => e.stopPropagation()}
+                className="bg-[#1E1E1E] rounded-lg p-8 max-w-lg w-full relative"
               >
-                <X className="w-6 h-6" />
-              </button>
-              <div className="text-center">
-                <div className="text-5xl mb-4">{aboutDetails[expandedAbout].icon}</div>
-                <h3 className="text-2xl font-bold mb-4 text-[#C9A84C]">
-                  {aboutDetails[expandedAbout].title}
-                </h3>
-                <p className="text-[#CCCCCC] leading-relaxed">
-                  {aboutDetails[expandedAbout].fullContent}
-                </p>
-              </div>
+                <button
+                  onClick={() => setExpandedAbout(null)}
+                  className="absolute top-4 right-4 text-[#C9A84C] hover:text-[#F5F0E8]"
+                >
+                  <X className="w-6 h-6" />
+                </button>
+                <div className="text-center">
+                  <div className="text-5xl mb-4">{aboutDetails[expandedAbout].icon}</div>
+                  <h3 className="text-2xl font-bold mb-4 text-[#C9A84C]">
+                    {aboutDetails[expandedAbout].title}
+                  </h3>
+                  <p className="text-[#CCCCCC] leading-relaxed">
+                    {aboutDetails[expandedAbout].fullContent}
+                  </p>
+                </div>
+              </motion.div>
             </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          )
+        }
+      </AnimatePresence >
 
       {/* QR Zoom Overlays */}
       <AnimatePresence>
-        {qrZoom && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setQrZoom(null)}
-            className="fixed inset-0 bg-black/95 backdrop-blur-sm z-50 flex items-center justify-center p-6"
-          >
+        {
+          qrZoom && (
             <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.8, opacity: 0 }}
-              onClick={(e) => e.stopPropagation()}
-              className="relative"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setQrZoom(null)}
+              className="fixed inset-0 bg-black/95 backdrop-blur-sm z-50 flex items-center justify-center p-6"
             >
-              <button
-                onClick={() => setQrZoom(null)}
-                className="absolute -top-12 right-0 text-[#C9A84C] hover:text-[#F5F0E8]"
+              <motion.div
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.8, opacity: 0 }}
+                onClick={(e) => e.stopPropagation()}
+                className="relative"
               >
-                <X className="w-8 h-8" />
-              </button>
-              <img
-                src={qrZoom === 'phonepe' ? phonepeQR : instagramQR}
-                alt={qrZoom === 'phonepe' ? 'PhonePe QR Code' : 'Instagram QR Code'}
-                className="max-w-md w-full h-auto rounded-lg shadow-2xl"
-              />
-              <p className="text-center mt-4 text-[#CCCCCC]">
-                {qrZoom === 'phonepe' ? 'Master HARSHAL SANJAY FALKE' : '@HARSH_PHALKE_FILMS'}
-              </p>
+                <button
+                  onClick={() => setQrZoom(null)}
+                  className="absolute -top-12 right-0 text-[#C9A84C] hover:text-[#F5F0E8]"
+                >
+                  <X className="w-8 h-8" />
+                </button>
+                <img
+                  src={qrZoom === 'phonepe' ? phonepeQR : instagramQR}
+                  alt={qrZoom === 'phonepe' ? 'PhonePe QR Code' : 'Instagram QR Code'}
+                  className="max-w-md w-full h-auto rounded-lg shadow-2xl"
+                />
+                <p className="text-center mt-4 text-[#CCCCCC]">
+                  {qrZoom === 'phonepe' ? 'Master HARSHAL SANJAY FALKE' : '@HARSH_PHALKE_FILMS'}
+                </p>
+              </motion.div>
             </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          )
+        }
+      </AnimatePresence >
 
       {/* Premium Invoice Modal */}
       <AnimatePresence>
-        {billPreview && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setBillPreview(false)}
-            className="invoice-modal-overlay"
-          >
+        {
+          billPreview && (
             <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              onClick={(e) => e.stopPropagation()}
-              ref={modalRef}
-              className="invoice-modal"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setBillPreview(false)}
+              className="invoice-modal-overlay"
             >
-              <div ref={billRef} className="invoice-modal-content">
-                {/* Header Band */}
-                <div className="invoice-header">
-                  <div className="invoice-header-content">
-                    {/* Left Column */}
-                    <div className="invoice-header-left">
-                      <Camera className="w-7 h-7 text-[#C9A84C] mb-2" />
-                      <div className="invoice-brand-name">HARSH PHALKE</div>
-                      <div className="invoice-brand-sub">PHOTO & FILMS</div>
-                      <div className="invoice-location">Pune, Maharashtra</div>
-                    </div>
-
-                    {/* Center Column */}
-                    <div className="invoice-header-center">
-                      <div className="invoice-title">INVOICE</div>
-                      <div className="invoice-title-line"></div>
-                    </div>
-
-                    {/* Right Column */}
-                    <div className="invoice-header-right">
-                      <div className="invoice-meta-row">
-                        <span className="invoice-meta-label">Invoice No:</span>
-                        <span className="invoice-meta-value">{invoiceNumber}</span>
+              <motion.div
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.9, opacity: 0 }}
+                onClick={(e) => e.stopPropagation()}
+                ref={modalRef}
+                className="invoice-modal"
+              >
+                <div ref={billRef} className="invoice-modal-content">
+                  {/* Header Band */}
+                  <div className="invoice-header">
+                    <div className="invoice-header-content">
+                      {/* Left Column */}
+                      <div className="invoice-header-left">
+                        <Camera className="w-7 h-7 text-[#C9A84C] mb-2" />
+                        <div className="invoice-brand-name">HARSH PHALKE</div>
+                        <div className="invoice-brand-sub">PHOTO & FILMS</div>
+                        <div className="invoice-location">Pune, Maharashtra</div>
                       </div>
-                      <div className="invoice-meta-row">
-                        <span className="invoice-meta-label">Date:</span>
-                        <span className="invoice-meta-date">{new Date().toLocaleDateString()}</span>
+
+                      {/* Center Column */}
+                      <div className="invoice-header-center">
+                        <div className="invoice-title">INVOICE</div>
+                        <div className="invoice-title-line"></div>
                       </div>
-                      <div className="invoice-meta-row">
-                        <span className="invoice-meta-label">Customer:</span>
-                        <span className="invoice-meta-customer">{customerName}</span>
+
+                      {/* Right Column */}
+                      <div className="invoice-header-right">
+                        <div className="invoice-meta-row">
+                          <span className="invoice-meta-label">Invoice No:</span>
+                          <span className="invoice-meta-value">{invoiceNumber}</span>
+                        </div>
+                        <div className="invoice-meta-row">
+                          <span className="invoice-meta-label">Date:</span>
+                          <span className="invoice-meta-date">{new Date().toLocaleDateString()}</span>
+                        </div>
+                        <div className="invoice-meta-row">
+                          <span className="invoice-meta-label">Customer:</span>
+                          <span className="invoice-meta-customer">{customerName}</span>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
 
-                {/* Gold Accent Strip */}
-                <div className="invoice-gold-strip"></div>
+                  {/* Gold Accent Strip */}
+                  <div className="invoice-gold-strip"></div>
 
-                {/* Bill Body */}
-                <div className="invoice-body">
-                  {/* Events Section */}
-                  {selectedEvents.size > 0 && (
+                  {/* Bill Body */}
+                  <div className="invoice-body">
+                    {/* Events Section */}
+                    {selectedEvents.size > 0 && (
+                      <div className="invoice-category">
+                        <div className="invoice-category-header">
+                          <div className="invoice-category-title">
+                            <span className="invoice-category-icon">🎉</span>
+                            <span className="invoice-category-name">EVENTS</span>
+                          </div>
+                        </div>
+                        {Array.from(selectedEvents).map(eventId => {
+                          const event = [...eventCategories.priority, ...eventCategories.other].find(e => e.id === eventId);
+                          if (!event) return null;
+                          const duration = eventDurations.get(eventId) || 'full';
+                          const price = duration === 'full' ? event.price : event.price * 0.6;
+                          return (
+                            <div key={eventId} className="invoice-line-item">
+                              <span className="invoice-service-name">
+                                {event.name} <span className="invoice-duration">({duration === 'full' ? 'Full Day' : 'Half Day'})</span>
+                              </span>
+                              <span className="invoice-service-price">₹{price.toLocaleString()}</span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+
+                    {/* Album Section */}
                     <div className="invoice-category">
                       <div className="invoice-category-header">
                         <div className="invoice-category-title">
-                          <span className="invoice-category-icon">🎉</span>
-                          <span className="invoice-category-name">EVENTS</span>
+                          <span className="invoice-category-icon">📖</span>
+                          <span className="invoice-category-name">ALBUM</span>
                         </div>
                       </div>
-                      {Array.from(selectedEvents).map(eventId => {
-                        const event = [...eventCategories.priority, ...eventCategories.other].find(e => e.id === eventId);
-                        if (!event) return null;
-                        const duration = eventDurations.get(eventId) || 'full';
-                        const price = duration === 'full' ? event.price : event.price * 0.6;
-                        return (
-                          <div key={eventId} className="invoice-line-item">
-                            <span className="invoice-service-name">
-                              {event.name} <span className="invoice-duration">({duration === 'full' ? 'Full Day' : 'Half Day'})</span>
-                            </span>
-                            <span className="invoice-service-price">₹{price.toLocaleString()}</span>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  )}
-
-                  {/* Album Section */}
-                  <div className="invoice-category">
-                    <div className="invoice-category-header">
-                      <div className="invoice-category-title">
-                        <span className="invoice-category-icon">📖</span>
-                        <span className="invoice-category-name">ALBUM</span>
+                      <div className="invoice-line-item">
+                        <span className="invoice-service-name">
+                          {albumType === 'small' ? '8×24 Small' : '12×36 Large'} Album ({albumPages} pages)
+                        </span>
+                        <span className="invoice-service-price">
+                          ₹{((albumPages * (albumType === 'small' ? 70 : 100)) + (albumType === 'small' ? 500 : 700)).toLocaleString()}
+                        </span>
                       </div>
                     </div>
-                    <div className="invoice-line-item">
-                      <span className="invoice-service-name">
-                        {albumType === 'small' ? '8×24 Small' : '12×36 Large'} Album ({albumPages} pages)
-                      </span>
-                      <span className="invoice-service-price">
-                        ₹{((albumPages * (albumType === 'small' ? 70 : 100)) + (albumType === 'small' ? 500 : 700)).toLocaleString()}
-                      </span>
-                    </div>
-                  </div>
 
-                  {/* Add-ons Section */}
-                  {addons.size > 0 && (
-                    <div className="invoice-category">
-                      <div className="invoice-category-header">
-                        <div className="invoice-category-title">
-                          <span className="invoice-category-icon">✨</span>
-                          <span className="invoice-category-name">ADD-ONS</span>
+                    {/* Add-ons Section */}
+                    {addons.size > 0 && (
+                      <div className="invoice-category">
+                        <div className="invoice-category-header">
+                          <div className="invoice-category-title">
+                            <span className="invoice-category-icon">✨</span>
+                            <span className="invoice-category-name">ADD-ONS</span>
+                          </div>
                         </div>
+                        {Array.from(addons).map(addonId => {
+                          const addon = addonServices.find(a => a.id === addonId);
+                          if (!addon) return null;
+                          return (
+                            <div key={addonId} className="invoice-line-item">
+                              <span className="invoice-service-name">{addon.name}</span>
+                              <span className="invoice-service-price">₹{addon.price.toLocaleString()}</span>
+                            </div>
+                          );
+                        })}
                       </div>
-                      {Array.from(addons).map(addonId => {
-                        const addon = addonServices.find(a => a.id === addonId);
-                        if (!addon) return null;
-                        return (
-                          <div key={addonId} className="invoice-line-item">
-                            <span className="invoice-service-name">{addon.name}</span>
-                            <span className="invoice-service-price">₹{addon.price.toLocaleString()}</span>
-                          </div>
-                        );
-                      })}
+                    )}
+
+                    {/* No Services Message */}
+                    {selectedEvents.size === 0 && addons.size === 0 && (
+                      <div className="invoice-no-services">
+                        No services selected yet.
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Subtotal Area */}
+                  <div className="invoice-subtotal">
+                    <div className="invoice-subtotal-row">
+                      <span>Subtotal</span>
+                      <span>₹{calculateTotal().toLocaleString()}</span>
                     </div>
-                  )}
+                  </div>
 
-                  {/* No Services Message */}
-                  {selectedEvents.size === 0 && addons.size === 0 && (
-                    <div className="invoice-no-services">
-                      No services selected yet.
+                  {/* Total Band */}
+                  <div className="invoice-total-band">
+                    <div className="invoice-total-content">
+                      <span className="invoice-total-label">TOTAL INVESTMENT</span>
+                      <span className="invoice-total-amount">₹{calculateTotal().toLocaleString()}</span>
                     </div>
-                  )}
-                </div>
+                  </div>
 
-                {/* Subtotal Area */}
-                <div className="invoice-subtotal">
-                  <div className="invoice-subtotal-row">
-                    <span>Subtotal</span>
-                    <span>₹{calculateTotal().toLocaleString()}</span>
+                  {/* Thank You Row */}
+                  <div className="invoice-thank-you">
+                    <div className="invoice-thank-you-text">
+                      Thank you for choosing Harsh Phalke Films & Photography!
+                    </div>
+                    <div className="invoice-stars">✦ ✦ ✦</div>
+                  </div>
+
+                  {/* Terms Strip */}
+                  <div className="invoice-terms">
+                    Terms: 50% advance non-refundable · Balance due on shoot day · RAW files not shared · Travel charges extra if applicable
+                  </div>
+
+                  {/* Footer Buttons */}
+                  <div className="invoice-footer">
+                    <button
+                      onClick={() => setBillPreview(false)}
+                      className="invoice-btn-back"
+                    >
+                      ← Back / Edit
+                    </button>
+                    <button
+                      onClick={handleDownloadPDF}
+                      disabled={isGeneratingPDF}
+                      className="invoice-btn-download"
+                    >
+                      {isGeneratingPDF ? '⏳ Generating PDF...' : '⬇ Download Invoice'}
+                    </button>
                   </div>
                 </div>
-
-                {/* Total Band */}
-                <div className="invoice-total-band">
-                  <div className="invoice-total-content">
-                    <span className="invoice-total-label">TOTAL INVESTMENT</span>
-                    <span className="invoice-total-amount">₹{calculateTotal().toLocaleString()}</span>
-                  </div>
-                </div>
-
-                {/* Thank You Row */}
-                <div className="invoice-thank-you">
-                  <div className="invoice-thank-you-text">
-                    Thank you for choosing Harsh Phalke Films & Photography!
-                  </div>
-                  <div className="invoice-stars">✦ ✦ ✦</div>
-                </div>
-
-                {/* Terms Strip */}
-                <div className="invoice-terms">
-                  Terms: 50% advance non-refundable · Balance due on shoot day · RAW files not shared · Travel charges extra if applicable
-                </div>
-
-                {/* Footer Buttons */}
-                <div className="invoice-footer">
-                  <button
-                    onClick={() => setBillPreview(false)}
-                    className="invoice-btn-back"
-                  >
-                    ← Back / Edit
-                  </button>
-                  <button
-                    onClick={handleDownloadPDF}
-                    disabled={isGeneratingPDF}
-                    className="invoice-btn-download"
-                  >
-                    {isGeneratingPDF ? '⏳ Generating PDF...' : '⬇ Download Invoice'}
-                  </button>
-                </div>
-              </div>
+              </motion.div>
             </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          )
+        }
+      </AnimatePresence >
 
       {/* Next Steps Instruction Screen */}
       <AnimatePresence>
-        {showNextSteps && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/90 backdrop-blur-sm z-50 flex items-center justify-center p-6"
-          >
+        {
+          showNextSteps && (
             <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-[#0F0F0F] border border-[#C9A84C] rounded-2xl p-10 max-w-lg w-full"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/90 backdrop-blur-sm z-50 flex items-center justify-center p-6"
             >
-              <div className="text-center mb-8">
-                <h2 
-                  className="text-2xl font-bold text-white mb-2"
-                  style={{ fontFamily: 'var(--font-display)' }}
-                >
-                  Booking Details Sent to WhatsApp!
-                </h2>
-                <p className="text-sm text-[#888888]">
-                  Complete your booking in 2 more steps
-                </p>
-              </div>
+              <motion.div
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.9, opacity: 0 }}
+                className="bg-[#0F0F0F] border border-[#C9A84C] rounded-2xl p-10 max-w-lg w-full"
+              >
+                <div className="text-center mb-8">
+                  <h2
+                    className="text-2xl font-bold text-white mb-2"
+                    style={{ fontFamily: 'var(--font-display)' }}
+                  >
+                    Booking Details Sent to WhatsApp!
+                  </h2>
+                  <p className="text-sm text-[#888888]">
+                    Complete your booking in 2 more steps
+                  </p>
+                </div>
 
-              {/* Step 1 */}
-              <div className="bg-[#141414] border border-[#2D2D2D] border-l-[3px] border-l-[#C9A84C] rounded-lg p-6 mb-4">
-                <div className="text-xs font-bold text-[#C9A84C] tracking-[3px] mb-2">
-                  STEP 1
+                {/* Step 1 */}
+                <div className="bg-[#141414] border border-[#2D2D2D] border-l-[3px] border-l-[#C9A84C] rounded-lg p-6 mb-4">
+                  <div className="text-xs font-bold text-[#C9A84C] tracking-[3px] mb-2">
+                    STEP 1
+                  </div>
+                  <p className="text-sm text-[#E0E0E0] leading-relaxed mb-3">
+                    Your Bill has been downloaded automatically to your device.
+                  </p>
+                  <div className="bg-[#1A1A1A] border border-[#2D2D2D] rounded-full px-3 py-1 inline-block">
+                    <span className="text-xs font-medium text-[#C9A84C]">
+                      HarshPhalke_Bill_{formData.fullName.replace(/\s+/g, '') || 'Customer'}.jpg
+                    </span>
+                  </div>
+                  <p className="text-xs text-[#888888] mt-2">
+                    Check your Downloads folder.
+                  </p>
                 </div>
-                <p className="text-sm text-[#E0E0E0] leading-relaxed mb-3">
-                  Your Bill has been downloaded automatically to your device.
-                </p>
-                <div className="bg-[#1A1A1A] border border-[#2D2D2D] rounded-full px-3 py-1 inline-block">
-                  <span className="text-xs font-medium text-[#C9A84C]">
-                    HarshPhalke_Bill_{formData.fullName.replace(/\s+/g, '') || 'Customer'}.jpg
-                  </span>
-                </div>
-                <p className="text-xs text-[#888888] mt-2">
-                  Check your Downloads folder.
-                </p>
-              </div>
 
-              {/* Step 2 */}
-              <div className="bg-[#141414] border border-[#2D2D2D] border-l-[3px] border-l-[#C9A84C] rounded-lg p-6 mb-6">
-                <div className="text-xs font-bold text-[#C9A84C] tracking-[3px] mb-2">
-                  STEP 2
+                {/* Step 2 */}
+                <div className="bg-[#141414] border border-[#2D2D2D] border-l-[3px] border-l-[#C9A84C] rounded-lg p-6 mb-6">
+                  <div className="text-xs font-bold text-[#C9A84C] tracking-[3px] mb-2">
+                    STEP 2
+                  </div>
+                  <p className="text-sm text-[#E0E0E0] leading-relaxed mb-3">
+                    In the WhatsApp chat that just opened:
+                  </p>
+                  <div className="text-sm text-[#E0E0E0] leading-relaxed space-y-1">
+                    <div>(a) Tap the attachment icon 📎</div>
+                    <div>(b) Attach your Bill image</div>
+                    <div>(c) Attach your Payment Screenshot</div>
+                    <div>(d) Hit Send</div>
+                  </div>
                 </div>
-                <p className="text-sm text-[#E0E0E0] leading-relaxed mb-3">
-                  In the WhatsApp chat that just opened:
-                </p>
-                <div className="text-sm text-[#E0E0E0] leading-relaxed space-y-1">
-                  <div>(a) Tap the attachment icon 📎</div>
-                  <div>(b) Attach your Bill image</div>
-                  <div>(c) Attach your Payment Screenshot</div>
-                  <div>(d) Hit Send</div>
-                </div>
-              </div>
 
-              {/* Action Buttons */}
-              <div className="space-y-3">
-                <button
-                  onClick={openWhatsAppAgain}
-                  className="w-full bg-transparent border border-[#25D366] text-[#25D366] font-bold text-sm py-4 rounded-lg flex items-center justify-center gap-3 hover:bg-[#25D366] hover:text-white transition-all"
-                >
-                  <Phone className="w-4 h-4" />
-                  Open WhatsApp Again
-                </button>
-                <button
-                  onClick={confirmFilesAttached}
-                  className="w-full bg-[#C9A84C] text-black font-bold text-sm py-4 rounded-lg hover:bg-[#E8C96A] transition-all"
-                >
-                  I have sent both files
-                </button>
-              </div>
+                {/* Action Buttons */}
+                <div className="space-y-3">
+                  <button
+                    onClick={openWhatsAppAgain}
+                    className="w-full bg-transparent border border-[#25D366] text-[#25D366] font-bold text-sm py-4 rounded-lg flex items-center justify-center gap-3 hover:bg-[#25D366] hover:text-white transition-all"
+                  >
+                    <Phone className="w-4 h-4" />
+                    Open WhatsApp Again
+                  </button>
+                  <button
+                    onClick={confirmFilesAttached}
+                    className="w-full bg-[#C9A84C] text-black font-bold text-sm py-4 rounded-lg hover:bg-[#E8C96A] transition-all"
+                  >
+                    I have sent both files
+                  </button>
+                </div>
+              </motion.div>
             </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          )
+        }
+      </AnimatePresence >
 
       {/* Final Success Screen */}
       <AnimatePresence>
-        {bookingSuccess && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/90 backdrop-blur-sm z-50 flex items-center justify-center p-6"
-          >
+        {
+          bookingSuccess && (
             <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-[#0F0F0F] border border-[#C9A84C] rounded-2xl p-10 max-w-md w-full text-center"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/90 backdrop-blur-sm z-50 flex items-center justify-center p-6"
             >
               <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ delay: 0.2, type: 'spring' }}
-                className="text-6xl text-[#4CAF50] mb-6"
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.9, opacity: 0 }}
+                className="bg-[#0F0F0F] border border-[#C9A84C] rounded-2xl p-10 max-w-md w-full text-center"
               >
-                ✓
-              </motion.div>
-              <h2 
-                className="text-2xl font-bold text-white mb-4"
-                style={{ fontFamily: 'var(--font-display)' }}
-              >
-                Booking Request Complete!
-              </h2>
-              <p className="text-sm text-[#888888] mb-6">
-                Harsh will confirm your booking within 24 hours
-              </p>
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ delay: 0.2, type: 'spring' }}
+                  className="text-6xl text-[#4CAF50] mb-6"
+                >
+                  ✓
+                </motion.div>
+                <h2
+                  className="text-2xl font-bold text-white mb-4"
+                  style={{ fontFamily: 'var(--font-display)' }}
+                >
+                  Booking Request Complete!
+                </h2>
+                <p className="text-sm text-[#888888] mb-6">
+                  Harsh will confirm your booking within 24 hours
+                </p>
 
-              {/* Booking Summary */}
-              <div className="bg-[#141414] border border-[#2D2D2D] rounded-lg p-4 mb-6 text-left">
-                <div className="space-y-2 text-xs">
-                  <div className="flex justify-between">
-                    <span className="text-[#888888]">Event :</span>
-                    <span className="text-white">{formData.eventType}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-[#888888]">Date :</span>
-                    <span className="text-white">{formData.eventDate}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-[#888888]">Venue :</span>
-                    <span className="text-white">{formData.location}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-[#888888]">Amount :</span>
-                    <span className="text-white">₹{calculateTotal().toLocaleString()}</span>
+                {/* Booking Summary */}
+                <div className="bg-[#141414] border border-[#2D2D2D] rounded-lg p-4 mb-6 text-left">
+                  <div className="space-y-2 text-xs">
+                    <div className="flex justify-between">
+                      <span className="text-[#888888]">Event :</span>
+                      <span className="text-white">{formData.eventType}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-[#888888]">Date :</span>
+                      <span className="text-white">{formData.eventDate}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-[#888888]">Venue :</span>
+                      <span className="text-white">{formData.location}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-[#888888]">Amount :</span>
+                      <span className="text-white">₹{calculateTotal().toLocaleString()}</span>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              <button
-                onClick={resetBookingForm}
-                className="w-full bg-transparent border border-[#2D2D2D] text-[#888888] font-medium text-sm py-3 rounded-lg hover:border-[#C9A84C] hover:text-[#C9A84C] transition-all"
-              >
-                Book Another Shoot
-              </button>
+                <button
+                  onClick={resetBookingForm}
+                  className="w-full bg-transparent border border-[#2D2D2D] text-[#888888] font-medium text-sm py-3 rounded-lg hover:border-[#C9A84C] hover:text-[#C9A84C] transition-all"
+                >
+                  Book Another Shoot
+                </button>
+              </motion.div>
             </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          )
+        }
+      </AnimatePresence >
 
       {/* Footer */}
-      <footer className="border-t border-[#C9A84C]/20 py-12 px-6">
+      < footer className="border-t border-[#C9A84C]/20 py-12 px-6" >
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             <button
@@ -2614,7 +2511,7 @@ Sent from harshphalkefilms.com`;
             © 2025 Harsh Phalke Films And Photography · Pune, Maharashtra · harshphalke05@gmail.com
           </div>
         </div>
-      </footer>
-    </div>
+      </footer >
+    </div >
   );
 }
